@@ -1,17 +1,42 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import { useState } from "react";
+import reactDom from "react-dom";
+import TeamperatureInput from "./TeamperatureInput";
+import BoilingVerdict from "./BoilingVerdict";
+import { toCelsius, toFahrenheit, tryConvert } from "./utils";
+import "./style.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+function Calculator() {
+	const [temprature, setTemprature] = useState("");
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+	const handleCelsiusChange = (temprature) => {
+		setTemprature({ scale: "c", temprature });
+	};
+
+	const handleFahrenheitChange = (temprature) => {
+		setTemprature({ scale: "f", temprature });
+	};
+
+	const scale = temprature.scale;
+	const temperaturee = temprature.temprature;
+	const celsius =
+		scale === "f" ? tryConvert(temperaturee, toCelsius) : temperaturee;
+	const fahrenheit =
+		scale === "c" ? tryConvert(temperaturee, toFahrenheit) : temperaturee;
+	return (
+		<div className='div-border'>
+			<TeamperatureInput
+				scale='c'
+				onTemperatureChange={handleCelsiusChange}
+				temperature={celsius}
+			/>
+			<TeamperatureInput
+				scale='f'
+				onTemperatureChange={handleFahrenheitChange}
+				temperature={fahrenheit}
+			/>
+			<BoilingVerdict celsius={parseFloat(celsius)} />
+		</div>
+	);
+}
+
+reactDom.render(<Calculator />, document.getElementById("root"));
